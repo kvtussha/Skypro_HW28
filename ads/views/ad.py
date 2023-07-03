@@ -15,8 +15,6 @@ from config import Config
 
 
 class AdDataView(View):
-    """Добавить данные из json-файла в базу данных"""
-
     def get(self, request):
         with open(Config.AD_PATH_JSON, "r", encoding="utf-8") as file:
             data = json.load(file)
@@ -25,13 +23,13 @@ class AdDataView(View):
                 is_published = item.get("is_published").title()
 
                 ads = Ad(
-                    name=item.get("name"),
+                    name=item.get("name")[:35],
                     author_id=item.get("author_id"),
                     price=item.get("price"),
                     description=item.get("description"),
                     is_published=is_published,
                     image=item.get("image"),
-                    category_id=item.get("category_id"),
+                    category_id=item.get("category_id")
                 )
                 ads.save()
 
@@ -100,7 +98,7 @@ class AdDetailView(DetailView):
 @method_decorator(csrf_exempt, name='dispatch')
 class AdCreateView(CreateView):
     model = Ad
-    fields = ["name", "author_id", "price", "description", "is_published", "image", "category_id"]
+    fields = ["name", "author", "price", "description", "is_published", "address", "category"]
 
     def post(self, request, *args, **kwargs):
         ad_data = json.loads(request.body)

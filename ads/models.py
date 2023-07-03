@@ -11,11 +11,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Location(models.Model):
     name = models.CharField(max_length=40, verbose_name='название')
-    lat = models.FloatField(verbose_name='широта')
-    lng = models.FloatField(verbose_name='долгота')
+    lat = models.FloatField(verbose_name='широта', blank=True, null=True)
+    lng = models.FloatField(verbose_name='долгота', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Местоположение'
@@ -29,7 +28,8 @@ class User(models.Model):
     ROLES = [
         ("user", "Пользователь"),
         ("moderator", "Модератор"),
-        ("admin", "Админ")
+        ("admin", "Админ"),
+        ("member", "Член сообщества")
     ]
 
     first_name = models.CharField(max_length=40, verbose_name='имя')
@@ -49,7 +49,7 @@ class User(models.Model):
 
 
 class Ad(models.Model):
-    name = models.CharField(max_length=100, verbose_name='название')
+    name = models.CharField(max_length=101, verbose_name='название')
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     price = models.PositiveIntegerField(verbose_name='цена')
     description = models.TextField(max_length=5000, verbose_name='описание')

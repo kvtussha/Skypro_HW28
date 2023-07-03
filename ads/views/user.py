@@ -14,8 +14,6 @@ import json
 from config import Config
 
 
-
-
 class UserDataView(View):
     def get(self, request):
         with open(Config.USER_PATH_JSON, "r", encoding="utf-8") as file:
@@ -33,6 +31,7 @@ class UserDataView(View):
                 users.save()
 
         return JsonResponse({"message": "Success"}, status=200)
+
 
 class UserListView(ListView):
     model = User
@@ -83,8 +82,7 @@ class UserDetailView(DetailView):
             "role": user.role,
             "age": user.age,
             "locations": list(map(str, user.locations.all()))
-    })
-
+        })
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -102,6 +100,7 @@ class UserCreateView(CreateView):
             password=users_data["password"],
             role=users_data["role"],
             age=users_data["age"],
+            locations=users_data["locations"]
         )
 
         for location_data in users_data.get("locations"):
@@ -122,16 +121,15 @@ class UserCreateView(CreateView):
             "password": users.password,
             "role": users.role,
             "age": users.age,
-            "locations": list(map(str, users.locations.all()))
+            "locations": list(map(str, users.locations.all())),
         })
-
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UserUpdateView(UpdateView):
     model = User
 
-    def update(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
 
         user_data = json.loads(request.body)
@@ -172,7 +170,6 @@ class UserUpdateView(UpdateView):
         })
 
 
-
 @method_decorator(csrf_exempt, name="dispatch")
 class UserDeleteView(DeleteView):
     model = User
@@ -182,3 +179,4 @@ class UserDeleteView(DeleteView):
         super().delete(request, *args, **kwargs)
 
         return JsonResponse({"status": "ok"}, status=200)
+

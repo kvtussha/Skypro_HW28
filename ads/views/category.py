@@ -10,14 +10,14 @@ from ads.models import Category
 import json
 from config import Config
 
-
 class CategoryDataView(View):
     def get(self, request):
         with open(Config.CATEGORY_PATH_JSON, "r", encoding="utf-8") as file:
             data = json.load(file)
 
+
             for item in data:
-                categories = Category(name=item.get("name"))
+                categories = Category(id=item.get("id"), name=item.get("name"))
                 categories.save()
 
         return JsonResponse({"message": "Success"}, status=200)
@@ -74,12 +74,12 @@ class CategoryCreateView(CreateView):
         })
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_exempt, name="dispatch")
 class CategoryUpdateView(UpdateView):
     model = Category
     fields = ["name"]
 
-    def update(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
 
         cat_data = json.loads(request.body)
@@ -89,8 +89,8 @@ class CategoryUpdateView(UpdateView):
         self.object.save()
 
         return JsonResponse({
-            "id": cat_data.id,
-            "name": cat_data.name
+            "id": self.object.id,
+            "name": self.object.name
         })
 
 
