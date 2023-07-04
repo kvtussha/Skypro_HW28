@@ -100,7 +100,6 @@ class UserCreateView(CreateView):
             password=users_data["password"],
             role=users_data["role"],
             age=users_data["age"],
-            locations=users_data["locations"]
         )
 
         for location_data in users_data.get("locations"):
@@ -128,9 +127,10 @@ class UserCreateView(CreateView):
 @method_decorator(csrf_exempt, name="dispatch")
 class UserUpdateView(UpdateView):
     model = User
+    fields = '__all__'
 
-    def put(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
 
         user_data = json.loads(request.body)
 
